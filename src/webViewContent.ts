@@ -50,11 +50,13 @@ export const content = () => `<!DOCTYPE html>
 
     .list li {
       cursor: pointer;
+      padding: 6px;
       margin-bottom: 5px;
     }
 
     .list li:hover {
       background-color: #c3bacc;
+      color: #000;
     }
 
     .music {
