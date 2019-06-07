@@ -1,6 +1,11 @@
 {
-  "name": "lyrics",
-  "displayName": "gabriielbs0673",
+  "name": "develyrics",
+  "displayName": "Develyrics",
+  "publisher": "gabriielbs0673",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gabrielbs/develyrics"
+  },
   "description": "search for the develyrics of your favorite song",
   "version": "0.0.2",
   "engines": {
