@@ -1,96 +1,201 @@
-export const content = () => `
-<!DOCTYPE html>
+export const content = () => `<!DOCTYPE html>
 <html lang="en">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    h3 {
-      display: inline-block;
+    body {
+      font-family: Helvetica
     }
 
-    #list {
+    h3 {
+      display: inline-block;
+      color: #ebe535;
+    }
+
+    form {
+      display: flex
+    }
+
+    .wrapper {
+      text-align: center
+    }
+
+    .input {
+      width: 80%;
+      height: 30px;
+      padding: 5px;
+      border-radius: 5px;
+      border: 1px#9547c6 solid;
+      margin-right: 10px;
+    }
+
+    .input:focus {
+      outline: none
+    }
+
+    .button {
+      width: 20%;
+      border: 0;
+      background-color: #9547c6;
+      color: #fff;
+    }
+
+    .list {
       list-style: none;
       padding: 0;
       margin: 10px 0;
     }
 
-    #list li {
+    .list li {
       cursor: pointer;
       margin-bottom: 5px;
     }
 
-    #list li:hover {
+    .list li:hover {
       background-color: #c3bacc;
     }
 
-    #music {
+    .music {
       margin-top: 10px;
       white-space: pre
     }
+
+    .loading {
+      width: 50px;
+      margin: auto;
+      margin-top: -51px;
+      padding: 10px;
+      font-size: 35px;
+      animation: spin 4s infinite linear;
+    }
+
+    .hide {
+      visibility: hidden;
+    }
+
+    .show {
+      visibility: visible;
+    }
+
+    @-moz-keyframes spin {
+      from {
+        -moz-transform: rotate(0deg);
+      }
+
+      to {
+        -moz-transform: rotate(360deg);
+      }
+    }
+
+    @-webkit-keyframes spin {
+      from {
+        -webkit-transform: rotate(0deg);
+      }
+
+      to {
+        -webkit-transform: rotate(360deg);
+      }
+    }
+
+    @keyframes spin {
+      from {
+        transform: rotate(0deg);
+      }
+
+      to {
+        transform: rotate(360deg);
+      }
+    }
   </style>
-  <title>Cat Coding</title>
+  <title>Develyrics</title>
 </head>
 
 <body>
-  <h3>Search for your favorite song!</h3>
-  <form id='form'>
-    <input type="text" name="song" />
-    <button type="submit" id="button">Search</button>
-  </form>
-  <ul id='list'>
-  </ul>
-  <div id='music'></div>
+  <div class="wrapper">
+    <h3>SEARCH FOR YOUR FAVORITE SONG!</h3>
+    <form class='form'>
+      <input type="text" name="song" class="input" />
+      <button type="submit" class="button">SEARCH &#x1f918;</button>
+    </form>
+    <div class="loading hide">
+      &#x1f3b6;
+    </div>
+    <ul class="list">
+    </ul>
+    <div class="music"></div>
+  </div>
 </body>
 <script>
-  const form = document.querySelector('#form')
   window.onload = () => {
     const apiKey = '93d3d93f93aa2de699a8d27525df761a'
     const instance = (endpoint) => {
-      return \`https://api.vagalume.com.br/\${endpoint}?apikey=\${apiKey}\`
+      return \`https://api.vagalume.com.br/\${endpoint}\`
     }
-const get = (endpoint, params) => (
-  window.fetch(\`\${instance(endpoint)}&\${params}\`).then(data => data.json())
-)
-form.addEventListener('submit', async (e) => {
-  e.preventDefault()
-  const inputValue = document.querySelector('input[name="song"]')
-  const data = await get('search.excerpt', \`q=\${inputValue.value}\`)
+    const get = (endpoint, params) => {
+      const url = new URL(instance(endpoint))
+      url.search = new URLSearchParams({
+        ...params,
+        apiKey,
+      })
 
-  const docs = data.response.docs
-  if (docs) {
-    buildMusicList(docs)
-  }
-})
+      return window.fetch(url).then(data => data.json())
+    }
+    const form = document.querySelector('.form')
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault()
+      const input = document.querySelector('input[name="song"]')
+      const loading = document.querySelector('.loading')
+      loading.classList.add('show')
+      input.classList.add('hide')
+      setTimeout(async () => {
+        try {
+          const data = await get('search.excerpt', { q: input.value })
+          loading.classList.remove('show')
+          input.classList.remove('hide')
+          const docs = data.response.docs
+          if (docs) {
+            buildMusicList(docs)
+          }
+        } catch (e) {
+          console.log(e)
+          const list = document.querySelector('.list')
+          list.appendChild(document.createTextNode('It was something wrong with the server'))
 
-const buildMusicList = (musics) => {
-  const list = document.querySelector('#list')
-  const items = musics.map(music => {
-    const li = document.createElement('li')
-    const content = document.createTextNode(music.band)
-    li.appendChild(content)
-    li.setAttribute('data-musicId', music.id)
-    li.addEventListener('click', getMusicLyric)
-    return li
-  })
+        } finally {
+          loading.classList.add('hide')
+          loading.classList.remove('show')
+        }
+      }, 1000)
+    })
 
-  items.forEach(item => list.appendChild(item))
-}
+    const buildMusicList = (musics) => {
+      const list = document.querySelector('.list')
+      const items = musics.map(music => {
+        const li = document.createElement('li')
+        const content = document.createTextNode(music.band)
+        li.appendChild(content)
+        li.setAttribute('data-musicId', music.id)
+        li.addEventListener('click', getMusicLyric)
+        return li
+      })
 
-const getMusicLyric = async (event) => {
-  const element = event.currentTarget
-  const musicId = element.getAttribute('data-musicId')
-  const musicContainer = document.querySelector('#music')
-  const listContainer = document.querySelector('#list')
-  musicContainer.innerHtml = ''
-  const data = await get('search.php', \`musid=\${musicId}\`)
-  musicContainer.appendChild(document.createTextNode(data.mus[0].text))
-  listContainer.innerHTML = ''
+      items.forEach(item => list.appendChild(item))
+    }
 
-}
+    const getMusicLyric = async (event) => {
+      const element = event.currentTarget
+      const musicId = element.getAttribute('data-musicId')
+      const musicContainer = document.querySelector('.music')
+      const listContainer = document.querySelector('.list')
+      musicContainer.innerHtml = ''
+      const data = await get('search.php', { musid: musicId })
+      musicContainer.appendChild(document.createTextNode(data.mus[0].text))
+      listContainer.innerHTML = ''
+
+    }
   }
 </script>
 
-  </html>
-`;
+</html>`;
