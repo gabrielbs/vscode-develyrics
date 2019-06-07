@@ -15,6 +15,7 @@ export function activate(context: vscode.ExtensionContext) {
       }
     );
     panel.webview.html = content();
+    panel.webview.postMessage({ apiKey: process.env.API_KEY });
   };
 
   context.subscriptions.push(

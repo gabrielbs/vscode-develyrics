@@ -128,8 +128,9 @@ export const content = () => `<!DOCTYPE html>
   </div>
 </body>
 <script>
-  window.onload = () => {
-    const apiKey = '93d3d93f93aa2de699a8d27525df761a'
+window.onload = () => {
+  window.addEventListener('message', ({ data }) => {
+    const { apiKey } = data
     const instance = (endpoint) => {
       return \`https://api.vagalume.com.br/\${endpoint}\`
     }
@@ -195,6 +196,7 @@ export const content = () => `<!DOCTYPE html>
       listContainer.innerHTML = ''
 
     }
+  })
   }
 </script>
 
