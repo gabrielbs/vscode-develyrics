@@ -1,4 +1,4 @@
-# Read the lyrics of your favorite songs
+# Read the lyrics of your favorite songs!
 
 1.  Press `Ctrl + Shift + P`_or`CMD + Shift + P` for Mac_
 2.  Type _Develyrics_
