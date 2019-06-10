@@ -1,6 +1,6 @@
 # Read the lyrics of your favorite songs!
 
-1.  Press `Ctrl + Shift + P`_or`CMD + Shift + P` for Mac_
+1.  Press `Ctrl + Shift + P` _or `CMD + Shift + P` for Mac_
 2.  Type _Develyrics_
 3.  Search for your music and click on the Artist
 
