@@ -6,12 +6,12 @@ export const content = () => `<!DOCTYPE html>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
-      font-family: Helvetica
+      font-family: Helvetica;
     }
 
     h3 {
       display: inline-block;
-      color: #ebe535;
+      color: var(--vscode-editor-foreground);
     }
 
     form {
@@ -27,7 +27,7 @@ export const content = () => `<!DOCTYPE html>
       height: 30px;
       padding: 5px;
       border-radius: 5px;
-      border: 1px#9547c6 solid;
+      border: 0;
       margin-right: 10px;
     }
 
@@ -38,8 +38,8 @@ export const content = () => `<!DOCTYPE html>
     .button {
       width: 20%;
       border: 0;
-      background-color: #9547c6;
-      color: #fff;
+      background-color: var(--vscode-button-background);
+      color: var(--vscode-button-foreground);
     }
 
     .list {
@@ -52,11 +52,12 @@ export const content = () => `<!DOCTYPE html>
       cursor: pointer;
       padding: 6px;
       margin-bottom: 5px;
+      color: var(--vscode-textLink-foreground);
+      background-color: var(--vscode-textCodeBlock-background);
     }
 
     .list li:hover {
-      background-color: #c3bacc;
-      color: #000;
+      color: var(--vscode-textLink-activeForeground);
     }
 
     .music {
@@ -148,6 +149,7 @@ window.onload = () => {
     const form = document.querySelector('.form')
     form.addEventListener('submit', async (e) => {
       e.preventDefault()
+      const musicContainer = document.querySelector('.music')
       const input = document.querySelector('input[name="song"]')
       const loading = document.querySelector('.loading')
       loading.classList.add('show')
@@ -167,6 +169,7 @@ window.onload = () => {
           list.appendChild(document.createTextNode('It was something wrong with the server'))
 
         } finally {
+          musicContainer.innerHTML = ''
           loading.classList.add('hide')
           loading.classList.remove('show')
         }
